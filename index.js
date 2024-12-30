@@ -1,10 +1,11 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const {Client, GatewayIntentBits, Collection} = require('discord.js');
 const fs = require('fs');
 const cron = require('node-cron');
 const trackFailures = require('./events/trackFailures');
 const resetRanking = require('./events/resetRanking');
+require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]});
 
 // Charger les commandes
 client.commands = new Collection();
@@ -37,9 +38,11 @@ client.on('interactionCreate', async interaction => {
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
-            await interaction.reply({ content: 'Une erreur s\'est produite en exécutant cette commande.', ephemeral: true });
+            await interaction.reply({
+                content: 'Une erreur s\'est produite en exécutant cette commande.', ephemeral: true
+            });
         }
     }
 });
 
-client.login('MTMyMzA2ODY3OTc5NzM0MjI4OQ.G1x2UR.rYIAa6eG7Nw2kp-uIlF5IucNW-dwS8jQeGHIKw');
+client.login(process.env.DISCORD_TOKEN);
