@@ -3,7 +3,10 @@ const fs = require('fs');
 const cron = require('node-cron');
 const trackFailures = require('./events/trackFailures');
 const resetRanking = require('./events/resetRanking');
+const express = require('express'); // Ajouter express pour créer un serveur HTTP
 require('dotenv').config();
+
+const app = express();
 
 const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]});
 
@@ -14,6 +17,10 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
+
+app.get('/', (req, res) => {
+    res.send('Le bot est en ligne et fonctionne!');
+});
 
 client.once('ready', () => {
     console.log('Bot is online!');
@@ -46,3 +53,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
